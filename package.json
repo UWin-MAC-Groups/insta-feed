@@ -1,0 +1,25 @@
+{
+  "name": "insta-feed",
+  "version": "1.0.0",
+  "description": "A social media implementation using MongoDb",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UWin-MAC-Groups/insta-feed"
+  },
+  "keywords": [
+    "instafeed"
+  ],
+  "author": "COMP-8157 Group 7",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.18",
+    "multer": "^1.4.2",
+    "multer-gridfs-storage": "^4.2.0"
+  }
+}
