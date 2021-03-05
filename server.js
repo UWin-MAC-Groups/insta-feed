@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require('path');
 const startMongoServer = require('./src/config/db');
 const apiV1Routes = require('./src/routes/v1')
 
@@ -10,6 +11,8 @@ startMongoServer();
 const PORT = process.env.PORT || 4000;
 const app = express();
 
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname,  "client", "build")))
 
