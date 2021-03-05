@@ -18,6 +18,9 @@ app.get("/", (req, res) => {
   res.json({ message: "API Working" });
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+})
 
 app.listen(PORT, (req, res) => {
   console.log(`Server Started at PORT ${PORT}`);

@@ -4,9 +4,10 @@
   "description": "A social media implementation using MongoDb",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "concurrently \"nodemon server.js\" \"cd client && yarn run start\"",
     "start": "node server.js",
-    "test": "mocha"
+    "test": "mocha",
+    "heroku-postbuild": "cd client && yarn install && yarn run build"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "multer-gridfs-storage": "^4.2.0"
   },
   "devDependencies": {
+    "concurrently": "^6.0.0",
     "nodemon": "^2.0.7"
   }
 }
