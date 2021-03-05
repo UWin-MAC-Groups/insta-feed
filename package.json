@@ -4,6 +4,8 @@
   "description": "A social media implementation using MongoDb",
   "main": "server.js",
   "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
     "test": "mocha"
   },
   "repository": {
@@ -17,9 +19,13 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.11.18",
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
