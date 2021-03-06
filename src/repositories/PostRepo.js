@@ -73,9 +73,10 @@ class PostRepo {
      */
     static async getPostsByTag(tag, sortBy, paginationSettings) {
         const { limit, skip } = paginationSettings;
+        const tagRegexPattern = new RegExp(`${tag}`, "i");
         try {
             var posts = await Post.aggregate([
-                { $match: { tags: { $in: [tag] } } },
+                { $match: { tags: { $in: [tagRegexPattern] } } },
                 { $sort: sortBy },
                 { $limit: limit + skip },
                 { $skip: skip },
@@ -114,9 +115,10 @@ class PostRepo {
     static async getPostsByTagAndType(feedSettings, paginationSettings) {
         const { type, tag, sortBy } = feedSettings;
         const { limit, skip } = paginationSettings;
+        const tagRegexPattern = new RegExp(`${tag}`, "i");
         try {
             var posts = await Post.aggregate([
-                { $match: { tags: { $in: [tag] } } },
+                { $match: { tags: { $in: [tagRegexPattern] } } },
                 { $match: { type: type } },
                 { $sort: sortBy },
                 { $limit: limit + skip },
