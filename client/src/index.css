@@ -5,9 +5,91 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #F2F2F2;
+  color: #151826;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+header {
+  border-bottom: 1px solid #D2D5D9;
+  box-shadow: 1px 5px 5px 0px rgba(210,213,217,0.75);
+  -webkit-box-shadow: 1px 5px 5px 0px rgba(210,213,217,0.75);
+  -moz-box-shadow: 1px 5px 5px 0px rgba(210,213,217,0.75);
+}
+
+.app-name {
+  font-family: 'Lobster Two', cursive, Arial, Helvetica, sans-serif;
+  font-size: 1.5rem;
+  color: #A63E44 !important;
+}
+
+.dropdown-menu {
+  background-color: #F2F2F2;
+}
+
+/** Utility Clases **/
+.btn-transparent {
+  color: #A63E44;
+  background-color: inherit;
+}
+
+.btn.btn-link.if-btn-link {
+  /* color: #BF3B5E; */
+  color: #151826;
+}
+
+.btn.btn-link.if-btn-link.active {
+  color: #F2F2F2;
+  border-radius: 0;
+  background-color: #BF3B5E;
+}
+
+.btn.btn-outline-secondary.if-btn-search {
+  color: #BF3B5E;
+  border-color: #CED4DA;
+  background-color: #FFFFFF;
+  border-left: 0;
+}
+
+.hide {
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+.if-textarea, .if-input {
+  border: none !important;
+}
+
+.if-btn-burgundy {
+  background-color: #BF3B5E;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.if-type-btns input[type=radio] {
+  display: none; 
+}
+
+input[type=radio] {  
+  display: none;  
+}  
+
+input[type=radio]+label:before {  
+  font-family: FontAwesome;  
+  display: inline-block;  
+}  
+/* checked icon */  
+
+.if-type-btns input[type=radio]:checked+label {  
+  color: #A63E44;  
+} 
+
+a.card.post-card {
+  text-decoration: none !important;
+  color: #151826 !important;
 }
