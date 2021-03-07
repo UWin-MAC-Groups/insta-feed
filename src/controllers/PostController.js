@@ -51,7 +51,20 @@ class PostController {
 
     static async viewFeed(req, res) {
         try {
-            const serviceRes = await PostService.getPostsFeed(req.body.feedSettings, req.body.paginationSettings);
+            const feedSettings = {
+                tag: req.query.tag,
+                type: req.query.type,
+                sortBy: {
+                    [req.query.sortBy]: parseInt(req.query.order)
+                }
+            }
+
+            const paginationSettings = {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip)
+            };
+
+            const serviceRes = await PostService.getPostsFeed(feedSettings, paginationSettings);
 
             if(!serviceRes.success) return res.status(400).json({ status: 'error', message: "Unable to get feed", data: error.message });
 

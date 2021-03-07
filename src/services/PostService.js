@@ -74,36 +74,26 @@ class PostService {
 
     /**
      * Get the posts for the feed.
-     * @param {Object} feedSettings Object containing string settings such as tag and type
-     * @param {*} paginationSettings Object containing settings for pagination such as limit, skip and sort.
+     * @param {Object} feedSettings Object containing string settings such as tag and type and sortBy
+     * @param {Object} paginationSettings Object containing settings for pagination such as limit, skip.
      */
     static async getPostsFeed(feedSettings, paginationSettings) {
-        const type = feedSettings.type;
-        const tag = feedSettings.tag;
-        const sortBy = feedSettings.sortBy;
+        const { tag, type, sortBy } = feedSettings;
 
         try {
             let repoRes;
-            if(
-                (type != null || typeof type !== 'undefined') &&
-                (tag === null || typeof tag === 'undefined')
-            ) {
+            
+            if(type == "all" && (tag === null || typeof tag === 'undefined' || tag.length == 0)) {
+                repoRes = await PostRepo.getPosts(paginationSettings.limit, paginationSettings.skip, sortBy); 
+            }
+            else if(type != "all" && (tag === null || typeof tag === 'undefined' || tag.length == 0)) {
                 repoRes = await PostRepo.getPostsByType(type, sortBy, paginationSettings);
             }
-            else if(
-                (type === null || typeof type === 'undefined') &&
-                (tag != null || typeof tag !== 'undefined')
-            ) {
+            else if(type == "all" && (tag != null || typeof tag !== 'undefined' || tag.length != 0)) {
                 repoRes = await PostRepo.getPostsByTag(tag, sortBy, paginationSettings);
             }
-            else if(
-                (type != null || typeof type !== 'undefined') &&
-                (tag != null || typeof tag !== 'undefined')
-            ) {
+            else if(type != "all" && (tag != null || typeof tag !== 'undefined' || tag.length != 0)) {
                 repoRes = await PostRepo.getPostsByTagAndType(feedSettings, paginationSettings);
-            }
-            else {
-                repoRes = await PostRepo.getPosts(paginationSettings.limit, paginationSettings.skip, sortBy); 
             }
 
             if(repoRes.success) return { success: true, data: { posts: repoRes.data }, message: repoRes.message };
