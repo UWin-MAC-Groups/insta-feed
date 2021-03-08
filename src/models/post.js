@@ -4,8 +4,8 @@ const postSchema = new mongoose.Schema(
   {
     content: { type: String, required: true },
     media: { type: Schema.Types.ObjectId, ref: "uploads.files" },
-    type: { type: String, required: true },
-    tags: { type: Array },
+    type: { type: String, required: true, index: true },
+    tags: { type: Array, index: true },
     likes: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     isCommentEnabled: { type: Boolean, default: true },
@@ -14,5 +14,7 @@ const postSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+postSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model("post", postSchema);
