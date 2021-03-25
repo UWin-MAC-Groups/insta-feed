@@ -93,3 +93,7 @@ a.card.post-card {
   text-decoration: none !important;
   color: #151826 !important;
 }
+
+.rhap_container {
+  box-shadow: none !important;
+}

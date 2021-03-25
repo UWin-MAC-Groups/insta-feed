@@ -5,6 +5,7 @@ function PostForm(props) {
     const [selectedType, setSelectedType] = useState("text");
     const [content, setContent] = useState("");
     const [tags, setTags] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
     const [isTextInput, setIsTextInput] = useState(true);
     const [acceptedFormats, setAcceptedFormats] = useState("");
     const [isDisabled, setIsDisabled] = useState(true);
@@ -30,16 +31,47 @@ function PostForm(props) {
     }, [isTextInput, selectedType, content]);
 
     const submitForm = (e) => {
-        e.preventDefault();
-        if(selectedType !== 'text') {
-            alert("Not yet implemented")
-            return;
-        }
+        e.preventDefault();  
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ content, type: selectedType, tags })
         };
+
+        if(selectedType !== 'text') {
+            mediaPostSubmission(requestOptions, selectedFile);
+        }
+        else {
+            textPostSubmission(requestOptions);
+        }
+    }
+
+    const mediaPostSubmission = (requestOptions, selectedFile) => {
+        fetch('/api/v1/posts', requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                const createdPostId = data.data._id;
+
+                let formData = new FormData();
+                formData.append("file", selectedFile, selectedFile.name);
+
+                const filePostOptions = {
+                    method: 'POST',
+                    body: formData
+                };
+                
+                fetch(`/api/v1/posts/${createdPostId}/files`, filePostOptions)
+                .then(res => res.json())
+                .then(fileUploadData => {
+                    console.log(data, fileUploadData);
+                    window.location.reload(); 
+                })
+                .catch(e => setSubmitFailed(true))
+            })
+            .catch(e => setSubmitFailed(true));
+    }
+
+    const textPostSubmission = (requestOptions) => { 
         fetch('/api/v1/posts', requestOptions)
             .then(response => response.json())
             .then(data => {
@@ -70,7 +102,16 @@ function PostForm(props) {
                             }} />
                             { !isTextInput && 
                                 <div className="form-group">
-                                    <input type="file" className="form-control-file" id="postFile" accept={acceptedFormats} />
+                                    <input 
+                                        type="file" 
+                                        className="form-control-file" 
+                                        id="postFile" 
+                                        accept={acceptedFormats}
+                                        onChange={(e) => {
+                                            //console.log(e.target.files[0])
+                                            setSelectedFile(e.target.files[0]);
+                                        }} 
+                                    />
                                 </div>
                             }
                             <div className="d-flex mt-2">
@@ -89,7 +130,7 @@ function PostForm(props) {
                                                     if(e.target.value !== "text") setIsTextInput(false);
                                                     else setIsTextInput(true);
                                                 }}
-                                                disabled={option.value !== "text"}
+                                                
                                             />
                                             <label className="form-check-label" 
                                                 htmlFor={`type${e}`} 

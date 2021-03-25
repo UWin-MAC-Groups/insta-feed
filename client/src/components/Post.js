@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 import { typeSettings } from '../utils/settings';
+import { getFileSource } from '../utils/helpers';
 
 function Post(props) {
     const { post } = props;
     const [ icon, setIcon ] = useState("fa fa-keyboard");
+    const [ postSource, setPostSource ] = useState("");
     const [ postTime, setPostTime ] = useState("");
-
+    
     const ageOfPost = moment(post.createdAt).fromNow(true).split(" ")[0];
     
+    const types = typeSettings.slice(1);
 
     useEffect(() => {
-        const types = typeSettings.slice(1);
         if(post.type === types[0].value){
             setIcon(types[0].icon);
         }
         else if (post.type === types[1].value) {
             setIcon(types[1].icon);
+            setPostSource(getFileSource(post));
         }
         else if(post.type === types[2].value) {
             setIcon(types[2].icon);
+            setPostSource(getFileSource(post));
         }
         else {
             setIcon(types[3].icon);
+            setPostSource(getFileSource(post));
         }
 
         if(!isNaN(parseInt(ageOfPost)) || (moment(post.createdAt).fromNow() === "a minute ago" || moment(post.createdAt).fromNow() === "a few seconds ago")) {
@@ -31,10 +38,25 @@ function Post(props) {
         else {
             setPostTime(moment(post.createdAt).format("MMM D YYYY"))
         }
-    }, [post.type, post.createdAt, ageOfPost])
+    }, [post.type, post.createdAt, ageOfPost, post, types])
 
     return(
-        <a href={`/posts/${post._id}`} className="card mb-1 post-card">
+        <a href={`/posts/${post._id}`} className="card mb-3 post-card">
+            {post.type === types[1].value && 
+                <img className="card-img-top" alt="Post" src={postSource} />
+            }
+            {post.type === types[2].value && 
+                <video className="card-img-top" src={postSource} autoPlay loop></video>
+            }
+            {post.type === types[3].value && 
+                <div className="pt-3">
+                    <AudioPlayer
+                        autoPlay
+                        src={postSource}
+                        customAdditionalControls={[]}
+                    />
+                </div>
+            }
             <div className="card-body pb-0">
                 <div className="d-flex">
                     <p>{post.content}</p>
