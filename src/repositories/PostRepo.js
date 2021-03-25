@@ -1,7 +1,8 @@
-const mongoose = require("mongoose");
+const Mongoose = require("mongoose");
 
 const Post = require('../models/post');
 const Comment = require('../models/comment');
+const { chunk, file, unwind } = require('../utils/aggregationPipelineStages')
 
 class PostRepo {
     /**
@@ -23,10 +24,17 @@ class PostRepo {
      */
     static async getPost(id) {
         try {
-            const post = await Post.findByIdAndUpdate(id, { $inc: { views: 1 } }, { new: true, useFindAndModify: false })
+            let post = await Post.findByIdAndUpdate(id, { $inc: { views: 1 } }, { new: true, useFindAndModify: false })
             .populate("comments");
             
-            if(post.length == 0) return { success: false, data: [], message: "Post not found" };
+            if(post == null || post.length == 0) return { success: false, data: [], message: "Post not found" };
+
+            post = await Post.aggregate([
+                { $match: { _id: Mongoose.Types.ObjectId(id) } },
+                file,
+                unwind,
+                chunk,
+            ]);
             return { success: true, data: [post], message: "Post found" };
         } catch (error) {
             throw new Error(error.message);
@@ -57,7 +65,10 @@ class PostRepo {
             const posts = await Post.aggregate([
                 { $sort: sortBy },
                 { $limit: limit + skip },
-                { $skip: skip }
+                { $skip: skip },
+                file,
+                unwind,
+                chunk
             ]);
 
             return { success: true, data: posts, message: "Posts retrieved" };
@@ -80,6 +91,9 @@ class PostRepo {
                 { $sort: sortBy },
                 { $limit: limit + skip },
                 { $skip: skip },
+                file,
+                unwind,
+                chunk
             ]);
             return { success: true, data: posts, message: `Posts tagged #${tag} retrieved` };
         } catch (error) {
@@ -100,6 +114,9 @@ class PostRepo {
                 { $sort: sortBy },
                 { $limit: limit + skip },
                 { $skip: skip },
+                file,
+                unwind,
+                chunk
             ]);
             return { success: true, data: posts, message: `Posts of type: ${type} retrieved` };
         } catch (error) {
@@ -123,6 +140,9 @@ class PostRepo {
                 { $sort: sortBy },
                 { $limit: limit + skip },
                 { $skip: skip },
+                file,
+                unwind,
+                chunk
             ]);
             return { success: true, data: posts, message: `Posts of type: ${type} tagged #${tag} retrieved` };
         } catch (error) {
