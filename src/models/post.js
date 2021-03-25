@@ -3,7 +3,7 @@ let Schema = mongoose.Schema;
 const postSchema = new mongoose.Schema(
   {
     content: { type: String, required: true },
-    media: { type: Schema.Types.ObjectId, ref: "uploads.files" },
+    media: { type: Schema.Types.ObjectId, ref: "media.file" },
     type: { type: String, required: true, index: true },
     tags: { type: Array, index: true },
     likes: { type: Number, default: 0 },
