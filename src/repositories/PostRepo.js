@@ -190,6 +190,21 @@ class PostRepo {
             throw new Error(error.message)
         }
     }
+
+    /**
+     * Function to link an uploaded file to a post.
+     * @param {Object} fileDetails An object containing the file information such as name, id, metadata etc.
+     * @returns Promise containing success object.
+     */
+    static async linkFileToPost(fileDetails) {
+        try {
+            const updatedPost = await Post.findByIdAndUpdate(fileDetails.metadata.postId, { $set: { media: fileDetails.id } }, { new: true, useFindAndModify: false });
+            if(updatedPost === null) return { success: false, data: [], message: "Post not found" };
+            return { success: true, data: [updatedPost], message: "File linked with post" };
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
 }
 
 module.exports = PostRepo;
