@@ -28,9 +28,6 @@ function OtherPostComponent(props) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ postId, comment })
         };
-
-        console.log(requestOptions);
-
         
         fetch(`/api/v1/posts/${postId}/comments`, requestOptions)
             .then(response => response.json())
@@ -38,6 +35,20 @@ function OtherPostComponent(props) {
                 window.location.reload();              
             })
             .catch(e => setSubmitFailed(true));
+    }
+
+    const likePost = () => {
+        const requestOptions = {
+            method: 'PUT',
+        };
+        fetch(`/api/v1/posts/${postId}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                window.location.reload();              
+            })
+            .catch(e => {
+                alert("Unable to like")
+            });
     }
 
     return (
@@ -64,7 +75,11 @@ function OtherPostComponent(props) {
                 </div>              
                 <p>{post.content}</p>
                 <div className="d-flex justify-content-between mb-2">
-                    <p className="mb-0"><i className="fa fas fa-heart"></i> {post.likes}</p>
+                    <p className="mb-0 btn btn-link if-btn-link" role="button" 
+                        onClick={likePost}
+                    >
+                        <i className="fa fas fa-heart"></i> {post.likes}
+                    </p>
                     <p className="mb-0"><i className="fa fas fa-eye"></i> {post.views}</p>
                     <p className="mb-0"><i className="fa fas fa-comment"></i> {post.commentsCount}</p>
                 </div>
@@ -89,7 +104,7 @@ function OtherPostComponent(props) {
                                 disabled={isDisabled} 
                                 onClick={submitForm}
                             >
-                                <i class="fas fa-paper-plane"></i>
+                                <i className="fas fa-paper-plane"></i>
                             </button>
                         </div>
                     </div>

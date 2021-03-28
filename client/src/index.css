@@ -89,7 +89,7 @@ input[type=radio]+label:before {
   color: #A63E44;  
 } 
 
-a.card.post-card {
+.card-body a.post-card {
   text-decoration: none !important;
   color: #151826 !important;
 }
@@ -108,4 +108,19 @@ a.card.post-card {
 .comment-block .text-small {
   font-size: small;
   color: #808080;
+}
+
+.if-btn-link {
+  text-decoration: none !important;
+  color: #151826 !important;
+}
+
+.if-btn-link:hover {
+  text-decoration: none !important;
+  color: #BF3B5E !important;
+}
+
+.if-btn-link:active {
+  text-decoration: none !important;
+  color: #A63E44 !important;
 }
