@@ -2,7 +2,7 @@ const Mongoose = require("mongoose");
 
 const Post = require('../models/post');
 const Comment = require('../models/comment');
-const { chunk, file, unwind } = require('../utils/aggregationPipelineStages')
+const { chunk, comment, file, unwind } = require('../utils/aggregationPipelineStages')
 
 class PostRepo {
     /**
@@ -25,16 +25,18 @@ class PostRepo {
     static async getPost(id) {
         try {
             let post = await Post.findByIdAndUpdate(id, { $inc: { views: 1 } }, { new: true, useFindAndModify: false })
-            .populate("comments");
             
             if(post == null || post.length == 0) return { success: false, data: [], message: "Post not found" };
 
             post = await Post.aggregate([
                 { $match: { _id: Mongoose.Types.ObjectId(id) } },
+                comment,
                 file,
                 unwind,
                 chunk,
             ]);
+
+            console.log(post)
             return { success: true, data: [post], message: "Post found" };
         } catch (error) {
             throw new Error(error.message);

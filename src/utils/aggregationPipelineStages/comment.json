@@ -1,0 +1,8 @@
+{
+    "$lookup": {
+        "from": "comments",
+        "localField": "_id",
+        "foreignField": "postId",
+        "as": "comments"
+    }
+}
