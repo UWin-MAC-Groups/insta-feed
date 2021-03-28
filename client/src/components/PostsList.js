@@ -5,7 +5,7 @@ function PostsList(props) {
     const renderPostsList = () => {
         if(props.posts && (typeof props.posts != "string")) {
             return props.posts.map((post, e) => {
-                return <Post key={e} post={post} />
+                return <Post key={e} post={post} page={"home"} />
             });
         }
         else {

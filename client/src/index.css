@@ -97,3 +97,15 @@ a.card.post-card {
 .rhap_container {
   box-shadow: none !important;
 }
+
+.comment-block {
+  padding: .75rem 1.25rem;
+  background-color: #F0F0F0;
+  border: 1px solid rgba(240,240,240,.125);
+  border-radius: 0.25em;
+}
+
+.comment-block .text-small {
+  font-size: small;
+  color: #808080;
+}

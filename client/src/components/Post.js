@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-import AudioPlayer from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
 import { typeSettings } from '../utils/settings';
 import { getFileSource } from '../utils/helpers';
+import HomePostComponent from './HomePostComponent';
+import OtherPostComponent from './OtherPostComponent';
 
 function Post(props) {
-    const { post } = props;
+    const { post, page } = props;
+    
     const [ icon, setIcon ] = useState("fa fa-keyboard");
     const [ postSource, setPostSource ] = useState("");
     const [ postTime, setPostTime ] = useState("");
@@ -40,36 +41,19 @@ function Post(props) {
         }
     }, [post.type, post.createdAt, ageOfPost, post, types])
 
+    const renderPostDetails = () => {
+        if(page === "home") {
+            return <HomePostComponent post={post} postSource={postSource} postTime={postTime} icon={icon} />
+        }
+        else {
+            return <OtherPostComponent post={post} postSource={postSource} postTime={postTime} icon={icon} />
+        }
+    }
+
     return(
-        <a href={`/posts/${post._id}`} className="card mb-3 post-card">
-            {post.type === types[1].value && 
-                <img className="card-img-top" alt="Post" src={postSource} />
-            }
-            {post.type === types[2].value && 
-                <video className="card-img-top" src={postSource} autoPlay loop></video>
-            }
-            {post.type === types[3].value && 
-                <div className="pt-3">
-                    <AudioPlayer
-                        autoPlay
-                        src={postSource}
-                        customAdditionalControls={[]}
-                    />
-                </div>
-            }
-            <div className="card-body pb-0">
-                <div className="d-flex">
-                    <p>{post.content}</p>
-                    <p className="ml-auto"><i className={`fa fas ${icon}`}></i></p>
-                </div>
-                <div className="d-flex justify-content-between">
-                    <p className="mb-0"><i className="fa fas fa-heart"></i> {post.likes}</p>
-                    <p className="mb-0"><i className="fa fas fa-eye"></i> {post.views}</p>
-                    <p className="mb-0"><i className="fa fas fa-comment"></i> {post.commentsCount}</p>
-                </div>
-                <p className="float-right mb-o">{postTime}</p>
-            </div>
-        </a>
+        <React.Fragment>
+            { renderPostDetails() }
+        </React.Fragment>
     )
 }
 
