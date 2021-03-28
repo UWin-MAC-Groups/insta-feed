@@ -36,7 +36,6 @@ class PostRepo {
                 chunk,
             ]);
 
-            console.log(post)
             return { success: true, data: [post], message: "Post found" };
         } catch (error) {
             throw new Error(error.message);
