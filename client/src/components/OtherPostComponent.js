@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { typeSettings } from '../utils/settings';
@@ -6,8 +6,39 @@ import Comment from '../components/Comment';
 
 function OtherPostComponent(props) {
     const { post, icon, postSource, postTime } = props;
-    console.log(postSource)
+    const postId = post._id;
+    
     const types = typeSettings.slice(1);
+
+    const [ comment, setComment ] = useState("");
+    const [ isDisabled, setIsDisabled ] = useState(true);
+    const [ submitFailed, setSubmitFailed ] = useState(false);
+
+    useEffect(() => {
+        if((comment.replace(/\s+/g, "").length !== 0)) {
+            setIsDisabled(false);
+        }
+        else setIsDisabled(true)
+    }, [comment]);
+
+    const submitForm = (e) => {
+        e.preventDefault();   
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postId, comment })
+        };
+
+        console.log(requestOptions);
+
+        
+        fetch(`/api/v1/posts/${postId}/comments`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                window.location.reload();              
+            })
+            .catch(e => setSubmitFailed(true));
+    }
 
     return (
         <div className="card mb-3 post-card">
@@ -46,17 +77,27 @@ function OtherPostComponent(props) {
                 <form className="mt-2">
                     <div className="input-group">
                         <input type="text" className="form-control" placeholder="Add comment" aria-label="Add comment"
+                            onChange={(e) => {
+                                setComment(e.target.value);
+                            }}
                         />
                         <div className="input-group-append">
                             <button 
                                 className="btn btn-outline-secondary if-btn-search" 
                                 type="button" 
                                 aria-label="Comment"
+                                disabled={isDisabled} 
+                                onClick={submitForm}
                             >
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
                     </div>
+                    {submitFailed &&
+                        <div class="alert alert-danger" role="alert">
+                            Post not created
+                        </div>
+                    }
                 </form>
             </div>
         </div>

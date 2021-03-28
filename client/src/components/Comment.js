@@ -16,7 +16,7 @@ function Comment(props) {
     }, [comment.createdAt, ageOfPost])
 
     return(
-        <div className="comment-block">
+        <div className="comment-block mb-2">
             <span>{props.comment.comment}</span>
             <br/>
             <span className="text-small">{postTime}</span>
