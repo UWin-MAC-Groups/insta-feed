@@ -6,7 +6,7 @@ import Comment from '../components/Comment';
 
 function OtherPostComponent(props) {
     const { post, icon, postSource, postTime } = props;
-    
+    console.log(postSource)
     const types = typeSettings.slice(1);
 
     return (
@@ -15,7 +15,7 @@ function OtherPostComponent(props) {
                 <img className="card-img-top" alt="Post" src={postSource} />
             }
             {post.type === types[2].value && 
-                <video className="card-img-top" src={postSource} autoPlay loop></video>
+                <video className="card-img-top" src={postSource} autoPlay loop controls></video>
             }
             {post.type === types[3].value && 
                 <div className="pt-3">
