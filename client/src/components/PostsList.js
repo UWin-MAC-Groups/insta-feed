@@ -1,10 +1,74 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Loader from "react-loader-spinner";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Post from './Post';
 
 function PostsList(props) {
-    const renderPostsList = () => {
-        if(props.posts && (typeof props.posts != "string")) {
-            return props.posts.map((post, e) => {
+    const { typeSettingValue, sortSettingValue, sortSettingField, tag } = props;
+    const limit = 10;
+    const [skip, setSkip] = useState(0);
+    const [isLoading, setIsLoading] = useState(false)
+    const [postsArray, setPostsArray] = useState([]);
+    const [isFetching, setIsFetching] = useState(false);
+    const [isEndOfPage, setIsEndOfPage] = useState(false);
+    
+    useEffect(() => {
+        setIsLoading(true);
+        fetch(`/api/v1/posts?limit=${limit}&skip=${skip}&type=${typeSettingValue}&sortBy=${sortSettingField}&order=${sortSettingValue}&tag=${tag}`)
+          .then(response => response.json())
+          .then(data => {
+                setIsLoading(false);
+                setPostsArray(data.data);
+            });
+    }, [typeSettingValue, sortSettingValue, sortSettingField, tag, limit, skip]);
+
+    useEffect(() => {
+        console.log(isEndOfPage)
+        if(!isEndOfPage) {
+            window.addEventListener('scroll', debounce(handleScroll, 500));
+            return () => window.removeEventListener('scroll', debounce(handleScroll, 500));
+        }
+        else return;
+    }, [isEndOfPage]);
+    
+    useEffect(() => {
+        if (!isFetching || (isFetching && isEndOfPage)) return;
+        fetchMoreListItems();
+    }, [isFetching, isEndOfPage]);
+    
+    function handleScroll() {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || isFetching || isEndOfPage) return;
+        setSkip(prevState => prevState + limit)
+        setIsFetching(true);
+    }
+
+    const debounce = (func, delay) => {
+        let inDebounce;
+        return function() {
+            clearTimeout(inDebounce);
+            inDebounce = setTimeout(() => {
+                func.apply(this, arguments);
+            }, delay);
+        }
+    }
+    
+    function fetchMoreListItems() {
+        fetch(`/api/v1/posts?limit=${limit}&skip=${skip}&type=${typeSettingValue}&sortBy=${sortSettingField}&order=${sortSettingValue}&tag=${tag}`)
+          .then(response => response.json())
+          .then(data => {
+              if(data.data.length > 0) {
+                setPostsArray(prevState => ([...prevState, ...data.data]));
+              }
+              else {
+                setIsEndOfPage(true);
+              }
+              setIsFetching(false);
+            });
+    }
+
+    const renderPostsList = (posts) => {
+        if(posts && (typeof posts != "string")) {
+            return posts.map((post, e) => {
                 return <Post key={e} post={post} page={"home"} />
             });
         }
@@ -17,7 +81,23 @@ function PostsList(props) {
     return(
         <div className="row">
             <div className="col-lg-6 offset-lg-3">
-                {renderPostsList()}
+                {isLoading &&
+                    <div className="container-fluid text-center p-5">        
+                        <Loader
+                        type="RevolvingDot"
+                        color="#A63E44"
+                        height={100}
+                        width={100}
+                        />
+                    </div>
+                }
+                {renderPostsList(postsArray)}
+                {isFetching && 'Fetching more posts..'}
+                {isEndOfPage &&
+                    <div className="container-fluid text-center p-5">        
+                        <p>You have reached the end</p>
+                    </div>
+                }
             </div>
         </div>
     )
