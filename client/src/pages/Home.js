@@ -6,7 +6,7 @@ import { PostForm, PostsList } from '../components';
 function Home(props) {
     const [postsArray, setPostsArray] = useState([]);
     const { typeSetting, sortSetting, tag, getNavType } = props;
-    const [limit , setLimit] = useState(10);
+    const limit = 10;
     const [skip, setSkip] = useState(0);
     const [isLoading, setIsLoading] = useState(false)
 
