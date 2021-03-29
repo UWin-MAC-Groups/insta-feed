@@ -23,16 +23,17 @@ function PostsList(props) {
     }, [typeSettingValue, sortSettingValue, sortSettingField, tag, limit, skip]);
 
     useEffect(() => {
-        console.log(isEndOfPage)
         if(!isEndOfPage) {
-            window.addEventListener('scroll', debounce(handleScroll, 500));
-            return () => window.removeEventListener('scroll', debounce(handleScroll, 500));
+            window.addEventListener('scroll', debounce(handleScroll, 50));
+            return () => window.removeEventListener('scroll', debounce(handleScroll, 50));
         }
-        else return;
+        else {
+            setIsFetching(false)
+        };
     }, [isEndOfPage]);
     
     useEffect(() => {
-        if (!isFetching || (isFetching && isEndOfPage)) return;
+        if (!isFetching || isEndOfPage) return;
         fetchMoreListItems();
     }, [isFetching, isEndOfPage]);
     
@@ -53,17 +54,20 @@ function PostsList(props) {
     }
     
     function fetchMoreListItems() {
-        fetch(`/api/v1/posts?limit=${limit}&skip=${skip}&type=${typeSettingValue}&sortBy=${sortSettingField}&order=${sortSettingValue}&tag=${tag}`)
-          .then(response => response.json())
-          .then(data => {
-              if(data.data.length > 0) {
-                setPostsArray(prevState => ([...prevState, ...data.data]));
-              }
-              else {
-                setIsEndOfPage(true);
-              }
-              setIsFetching(false);
-            });
+        if(!isEndOfPage){
+            fetch(`/api/v1/posts?limit=${limit}&skip=${skip}&type=${typeSettingValue}&sortBy=${sortSettingField}&order=${sortSettingValue}&tag=${tag}`)
+              .then(response => response.json())
+              .then(data => {
+                  if(data.data.length > 0) {
+                    setPostsArray(prevState => ([...prevState, ...data.data]));
+                    setIsFetching(false);
+                  }
+                  else {
+                    setIsFetching(false);
+                    setIsEndOfPage(true);
+                  }
+                });
+        }
     }
 
     const renderPostsList = (posts) => {
