@@ -1,11 +1,5 @@
 # InstaFeed
-A social media website implementation using MongoDb by Group 7 COMP 8157 Class
-
-## Group Members
-- Prachi Amin
-- Adaobi Aniuchi
-- Vishwesh Mistry
-- Shivang Passawala
+A multimedia social feed implementation using MongoDb.
 
 ## Set Up
 - Create a .env file with a variable called ATLAS_DB_URI
